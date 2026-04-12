@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Assemble Debug",
+      "type": "shell",
+      "command": "./gradlew :androidApp:assembleDebug"
+    },
+    {
+      "label": "Install Debug",
+      "type": "shell",
+      "command": "./gradlew :androidApp:installDebug"
+    },
+    {
+      "label": "Run MainActivity",
+      "type": "shell",
+      "command": "adb shell am start -n com.example.rakah/com.example.rakah.android.MainActivity"
+    }
+  ]
+}

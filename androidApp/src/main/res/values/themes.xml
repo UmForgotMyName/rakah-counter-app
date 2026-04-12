@@ -1,0 +1,5 @@
+<!-- androidApp/src/main/res/values/themes.xml -->
+<resources>
+    <!-- XML theme for the app process (status bar, dialogs, etc.) -->
+    <style name="Theme.Rakah" parent="Theme.Material3.DayNight.NoActionBar" />
+</resources>

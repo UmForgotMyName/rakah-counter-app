@@ -1,0 +1,30 @@
+# Gradle / Android build outputs
+.gradle/
+**/build/
+
+# Kotlin / Java compiled outputs
+*.class
+out/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+local.properties
+.cxx/
+.externalNativeBuild/
+captures/
+
+# Signing artifacts
+*.jks
+*.keystore
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code: keep shared tasks, ignore personal workspace files
+.vscode/*
+!.vscode/tasks.json
