@@ -21,8 +21,15 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 data class UiState(
+    val prayer: PrayerType = PrayerType.FAJR,
+    val totalRakah: Int = 2,
+    val currentRakah: Int = 1,
     val rakah: Int = 0,
     val posture: Posture = Posture.UNKNOWN,
+    val currentStep: PrayerStep = PrayerStep.QIYAM,
+    val previousStep: PrayerStep? = null,
+    val nextStep: PrayerStep? = PrayerStep.RUKU,
+    val previewMirrored: Boolean = true,
     val postureConfidence: Float = 0f,
     val lastEvent: String? = null,
     val previewWidth: Int = 0,
@@ -52,8 +59,35 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
         processFrame(bmp, rotationDegrees)
     }
 
+    init {
+        applyResult(
+            result = engine.setPrayer(PrayerType.FAJR),
+            previewWidth = 0,
+            previewHeight = 0,
+            keypoints = emptyMap()
+        )
+    }
+
     fun onCameraPermissionResult(granted: Boolean) {
         _cameraEnabled.value = granted
+    }
+
+    fun onPreviewMirrorChanged(mirrored: Boolean) {
+        if (_ui.value.previewMirrored != mirrored) {
+            _ui.value = _ui.value.copy(previewMirrored = mirrored)
+        }
+    }
+
+    fun selectPrayer(prayerType: PrayerType) {
+        applyResult(engine.setPrayer(prayerType), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
+    }
+
+    fun onSalaamRight() {
+        applyResult(engine.markSalaamRight(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
+    }
+
+    fun onSalaamLeft() {
+        applyResult(engine.markSalaamLeft(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
     }
 
     override fun onCleared() {
@@ -91,14 +125,28 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
         )
 
         val result = engine.onFrame(frame)
+        applyResult(result, w, h, keypoints)
+    }
 
+    private fun applyResult(
+        result: RakahResult,
+        previewWidth: Int,
+        previewHeight: Int,
+        keypoints: Map<String, Keypoint>
+    ) {
         _ui.value = _ui.value.copy(
+            prayer = result.prayer,
+            totalRakah = result.totalRakah,
+            currentRakah = result.currentRakah,
             rakah = result.rakahCount,
             posture = result.currentPosture,
+            currentStep = result.currentStep,
+            previousStep = result.previousStep,
+            nextStep = result.nextStep,
             postureConfidence = result.postureConfidence,
             lastEvent = result.lastEvent,
-            previewWidth = w,
-            previewHeight = h,
+            previewWidth = previewWidth,
+            previewHeight = previewHeight,
             keypointsForOverlay = keypoints
         )
     }

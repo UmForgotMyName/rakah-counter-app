@@ -28,15 +28,20 @@ private val EDGES = listOf(
 fun PoseOverlay(
     width: Int,
     height: Int,
-    keypoints: Map<String, Keypoint>
+    keypoints: Map<String, Keypoint>,
+    mirrorX: Boolean = false
 ) {
     Canvas(Modifier.fillMaxSize()) {
         // scale input pixel coords (width x height) to current canvas size
         val sx = if (width > 0) size.width / width else 1f
         val sy = if (height > 0) size.height / height else 1f
+        fun mapX(rawX: Float): Float {
+            val x = rawX * sx
+            return if (mirrorX) size.width - x else x
+        }
 
         fun pt(name: String): Offset? =
-            keypoints[name]?.let { Offset(it.x * sx, it.y * sy) }
+            keypoints[name]?.let { Offset(mapX(it.x), it.y * sy) }
 
         // bones
         for ((a, b) in EDGES) {
@@ -55,7 +60,7 @@ fun PoseOverlay(
         keypoints.values.forEach { kp ->
             drawCircle(
                 color = Color.Magenta,
-                center = Offset(kp.x * sx, kp.y * sy),
+                center = Offset(mapX(kp.x), kp.y * sy),
                 radius = 8f
             )
         }

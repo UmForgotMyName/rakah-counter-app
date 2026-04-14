@@ -25,7 +25,8 @@ fun bindCamera(
     enabled: Boolean,
     lifecycleOwner: LifecycleOwner,
     analyzer: MoveNetAnalyzer,
-    analysisExecutor: Executor
+    analysisExecutor: Executor,
+    onPreviewMirroredChanged: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -54,7 +55,12 @@ fun bindCamera(
                     .build()
                     .also { it.setAnalyzer(analysisExecutor, analyzer) }
 
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                val cameraSelector = if (cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)) {
+                    CameraSelector.DEFAULT_FRONT_CAMERA
+                } else {
+                    CameraSelector.DEFAULT_BACK_CAMERA
+                }
+                onPreviewMirroredChanged(cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA)
                 try {
                     cameraProvider.unbindAll()
                     cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, analysis)
