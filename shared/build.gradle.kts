@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 // shared/build.gradle.kts
 plugins {
     kotlin("multiplatform")
@@ -7,8 +9,18 @@ plugins {
 
 kotlin {
     androidTarget()
-    // iosArm64()
-    // iosSimulatorArm64()
+    val xcf = XCFramework("SharedKit")
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedKit"
+            isStatic = true
+            xcf.add(this)
+        }
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -16,6 +28,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
     }

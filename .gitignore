@@ -28,3 +28,11 @@ Thumbs.db
 # VS Code: keep shared tasks, ignore personal workspace files
 .vscode/*
 !.vscode/tasks.json
+
+# iOS / Xcode generated user artifacts
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+DerivedData/
+iosApp/DerivedData/

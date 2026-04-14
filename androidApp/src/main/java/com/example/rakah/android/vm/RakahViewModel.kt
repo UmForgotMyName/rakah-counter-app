@@ -9,11 +9,7 @@ import androidx.camera.core.ImageProxy
 import androidx.lifecycle.AndroidViewModel
 import com.example.rakah.android.ml.MoveNetInterpreter
 import com.example.rakah.android.ml.toBitmap
-import com.example.rakah.classifier.DefaultPoseClassifier
-import com.example.rakah.classifier.Thresholds
-import com.example.rakah.engine.RakahEngine
-import com.example.rakah.fsm.PostureSmoother
-import com.example.rakah.fsm.RakahFSM
+import com.example.rakah.engine.PrayerSessionController
 import com.example.rakah.model.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,11 +38,10 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
     val analysisExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
     private var moveNet: MoveNetInterpreter? = null
-    private val standingCalib = StandingCalib(initialHeadToAnkle = 300f)
-    private val engine = RakahEngine(
-        classifier = DefaultPoseClassifier(Thresholds(), standingCalib),
-        smoother = PostureSmoother(confirmFrames = 6),
-        fsm = RakahFSM()
+    private val session = PrayerSessionController(
+        initialPrayer = PrayerType.FAJR,
+        standingHeadToAnklePx = 300f,
+        confirmFrames = 6
     )
 
     private val _cameraEnabled = MutableStateFlow(false)
@@ -61,7 +56,7 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         applyResult(
-            result = engine.setPrayer(PrayerType.FAJR),
+            result = session.setPrayer(PrayerType.FAJR),
             previewWidth = 0,
             previewHeight = 0,
             keypoints = emptyMap()
@@ -79,15 +74,15 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun selectPrayer(prayerType: PrayerType) {
-        applyResult(engine.setPrayer(prayerType), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
+        applyResult(session.setPrayer(prayerType), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
     }
 
     fun onSalaamRight() {
-        applyResult(engine.markSalaamRight(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
+        applyResult(session.markSalaamRight(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
     }
 
     fun onSalaamLeft() {
-        applyResult(engine.markSalaamLeft(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
+        applyResult(session.markSalaamLeft(), _ui.value.previewWidth, _ui.value.previewHeight, _ui.value.keypointsForOverlay)
     }
 
     override fun onCleared() {
@@ -124,7 +119,7 @@ class RakahViewModel(app: Application) : AndroidViewModel(app) {
             timestampMs = System.currentTimeMillis()
         )
 
-        val result = engine.onFrame(frame)
+        val result = session.onFrame(frame)
         applyResult(result, w, h, keypoints)
     }
 

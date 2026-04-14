@@ -30,11 +30,15 @@ class RakahEngine(
         return lastResult
     }
 
+    fun onClassifiedPosture(posture: Posture, confidence: Float = 1f): RakahResult {
+        val stable = smoother.onRaw(posture)
+        lastStableForClassifier = stable
+        lastResult = fsm.onStablePosture(stable, confidence = confidence)
+        return lastResult
+    }
+
     fun onFrame(frame: PoseFrame): RakahResult {
         val raw = classifier.classify(frame, previousStable = lastStableForClassifier)
-        val stable = smoother.onRaw(raw.posture)
-        lastStableForClassifier = stable
-        lastResult = fsm.onStablePosture(stable, confidence = raw.confidence)
-        return lastResult
+        return onClassifiedPosture(raw.posture, raw.confidence)
     }
 }

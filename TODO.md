@@ -50,13 +50,15 @@ Status legend:
 
 ## E. Platform / Product
 
-- [ ] Re-enable and validate iOS targets in `shared/build.gradle.kts`.
+- [x] Re-enable iOS targets and framework output in `shared/build.gradle.kts`.
+  - Implemented with `iosArm64` + `iosSimulatorArm64` + `iosX64` and `SharedKit` framework setup.
+- [x] Add direct iOS integration starter workflow (`iosApp` scaffold + docs + scripts).
+  - Implemented in `iosApp/README.md`, `iosApp/StarterApp/*`, and `iosApp/scripts/sync_step_assets.sh`.
 - [ ] Add structured app configuration (threshold presets per camera setup).
 - [ ] Add session persistence + export (JSON summary with timestamps/events).
 
 ## F. Tooling / Docs
 
 - [x] Create deep `README.md` with architecture, pipeline, and source-backed rationale.
-- [x] Create `AGENT.md` with development invariants and contributor runbook.
+- [x] Create `AGENTS.md` with development invariants and contributor runbook.
 - [ ] Add CI pipeline for `assembleDebug` and shared tests.
-
