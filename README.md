@@ -9,6 +9,7 @@ This repository contains a Kotlin Multiplatform prayer guidance system with:
 ## Documentation
 
 - Root architecture and workflow: `README.md` (this file)
+- Developer environment, build, and test setup: `DEVELOPMENT.md`
 - Contributor/agent runbook: `AGENTS.md`
 - iOS direct integration details: `iosApp/README.md`
 - Work backlog and status: `TODO.md`

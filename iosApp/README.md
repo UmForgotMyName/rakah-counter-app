@@ -5,6 +5,7 @@ This project uses direct Kotlin Multiplatform integration for iOS.
 No CocoaPods bridge is required.
 
 For overall architecture, see root `README.md`.
+For full environment/build/test setup, see root `DEVELOPMENT.md`.
 For contributor workflow rules, see root `AGENTS.md`.
 
 ## What is generated from `shared`

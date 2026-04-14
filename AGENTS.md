@@ -14,13 +14,17 @@ Use these as source-of-truth, in this order:
    - project architecture
    - module map
    - primary build commands
-2. `AGENTS.md` (this file):
+2. `DEVELOPMENT.md`:
+   - environment setup requirements
+   - compile/build commands
+   - Android and iOS testing workflows
+3. `AGENTS.md` (this file):
    - engineering rules
    - workflow expectations
    - verification checklist
-3. `iosApp/README.md`:
+4. `iosApp/README.md`:
    - direct iOS integration setup in Xcode
-4. `TODO.md`:
+5. `TODO.md`:
    - execution backlog with status
 
 If docs conflict, update all affected docs in the same change.
@@ -130,4 +134,3 @@ Set `JAVA_HOME` to a valid JDK 17 and re-run checks.
 2. Add calibration UX flow.
 3. Add telemetry overlay (fps/inference time/dropped frames).
 4. Add iOS native posture detector adapter that feeds `PrayerSessionController.onClassifiedPosture(...)`.
-
